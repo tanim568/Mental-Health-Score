@@ -202,7 +202,7 @@
     <span>STATUS <b id="statusStamp">IN PROGRESS</b></span>
   </div>
   <h1 class="proj-title">Build &amp; Ship an <em>ML‑Powered</em> Web App</h1>
-  <p class="proj-sub">A five-sheet construction guide: train a model, wrap it in FastAPI, validate with Pydantic, connect a plain HTML/CSS/JS frontend, and ship it on Render.</p>
+  <p class="proj-sub">A five-sheet project guide showing the current notebook, FastAPI API, Pydantic validation, frontend integration, and deployment setup. Items can be checked off as you verify them.</p>
 
   <div class="schematic">
     <svg viewBox="0 0 980 150" id="pipelineSvg">
@@ -265,34 +265,34 @@
         <li><input type="checkbox" id="c1-6"><label for="c1-6">Check skewness on numeric columns, log-transform the one column that needed it</label></li>
         <li><input type="checkbox" id="c1-7"><label for="c1-7">Feature engineering — group a high-cardinality column into top categories + "Other"</label></li>
         <li><input type="checkbox" id="c1-8"><label for="c1-8">Decide encoding strategy — ordinal for ordered categories, one-hot for unordered ones</label></li>
-        <li><input type="checkbox" id="c1-9"><label for="c1-9">Train/test split, done before any preprocessing to avoid data leakage</label></li>
-        <li><input type="checkbox" id="c1-10"><label for="c1-10">Build preprocessing with <code>ColumnTransformer</code> — impute, scale, encode</label></li>
+        <li><input type="checkbox" id="c1-9"><label for="c1-9">Create a 70/30 train-test split (the country-group list is created earlier from the full dataset, so that step is not fully leakage-safe)</label></li>
+        <li><input type="checkbox" id="c1-10"><label for="c1-10">Build preprocessing with <code>ColumnTransformer</code> — transform and scale numeric features, encode categorical features (no imputer is used in the current notebook)</label></li>
         <li><input type="checkbox" id="c1-11"><label for="c1-11">Wrap preprocessing + model together in a single <code>Pipeline</code></label></li>
         <li><input type="checkbox" id="c1-12"><label for="c1-12">Train a baseline model, then a stronger model on the same pipeline</label></li>
         <li><input type="checkbox" id="c1-13"><label for="c1-13">Hyperparameter tuning with <code>RandomizedSearchCV</code></label></li>
         <li><input type="checkbox" id="c1-14"><label for="c1-14">Evaluate and compare models with proper metrics</label></li>
-        <li><input type="checkbox" id="c1-15"><label for="c1-15">Check feature importance to confirm the model learned sensible patterns</label></li>
+        <li><input type="checkbox" id="c1-15"><label for="c1-15">Optional follow-up: inspect feature importance (not implemented in the current notebook)</label></li>
         <li><input type="checkbox" id="c1-16"><label for="c1-16">Save the complete pipeline with <code>joblib.dump()</code></label></li>
-        <li><input type="checkbox" id="c1-17"><label for="c1-17">Run one prediction example end-to-end to sanity-check the saved pipeline</label></li>
+        <li><input type="checkbox" id="c1-17"><label for="c1-17">Optional follow-up: run a saved-pipeline prediction sanity check (not shown in the current notebook)</label></li>
       </ul>
 
-      <div class="callout"><b>Why it matters:</b> we save the whole pipeline, not just the raw model — the FastAPI backend can then call <code>predict()</code> directly on raw input without reimplementing any preprocessing.</div>
+      <div class="callout"><b>Current behavior:</b> the notebook saves the default Random Forest pipeline as <code>Mental_Health_Model.pkl</code>. The country grouping is derived before the split, and no imputer is used in the current preprocessing pipeline. These are documented limitations; this guide does not change the model.</div>
     </section>
 
     <!-- PHASE 2 -->
     <section class="sheet" id="phase2">
       <div class="sheet-corner">SHEET 02 / 05</div>
       <h2><span class="tag">02</span> FastAPI Service Layer</h2>
-      <p class="deck">Wraps the saved pipeline behind a clean, documented HTTP interface.</p>
+      <p class="deck">The current <code>main.py</code> loads the saved pipeline and exposes a <code>/predict</code> endpoint.</p>
 
       <ul class="checklist" data-phase="2">
-        <li><input type="checkbox" id="c2-1"><label for="c2-1">Load <code>model.pkl</code> once at startup (not per-request)</label></li>
+        <li><input type="checkbox" id="c2-1"><label for="c2-1">Load <code>Mental_Health_Model.pkl</code> once when the API module starts</label></li>
         <li><input type="checkbox" id="c2-2"><label for="c2-2">Create a <code>/predict</code> POST route</label></li>
-        <li><input type="checkbox" id="c2-3"><label for="c2-3">Mount static frontend from the same app (avoids CORS)</label></li>
-        <li><input type="checkbox" id="c2-4"><label for="c2-4">Add a <code>/health</code> route for uptime checks</label></li>
+        <li><input type="checkbox" id="c2-3"><label for="c2-3">Frontend is hosted separately and sends requests to the deployed API configured in <code>script.js</code> (the API currently enables CORS)</label></li>
+        <li><input type="checkbox" id="c2-4"><label for="c2-4">Optional follow-up: add a <code>/health</code> route for uptime checks (not currently implemented)</label></li>
       </ul>
 
-      <div class="callout"><b>Gotcha:</b> serving frontend + API from one FastAPI app means same-origin requests — no CORS headers to configure at all.</div>
+      <div class="callout"><b>Current setup:</b> the frontend and API are separate, so browser requests rely on the API CORS configuration. Static frontend hosting and a health route are not currently implemented in <code>main.py</code>.</div>
     </section>
 
     <!-- PHASE 3 -->
@@ -320,7 +320,7 @@
       <ul class="checklist" data-phase="4">
         <li><input type="checkbox" id="c4-1"><label for="c4-1">Build form in <code>index.html</code></label></li>
         <li><input type="checkbox" id="c4-2"><label for="c4-2">POST form data via <code>fetch</code> in <code>script.js</code></label></li>
-        <li><input type="checkbox" id="c4-3"><label for="c4-3">Render prediction + confidence in the DOM</label></li>
+        <li><input type="checkbox" id="c4-3"><label for="c4-3">Render the predicted score and its explanatory label in the DOM (the API does not return a confidence score)</label></li>
         <li><input type="checkbox" id="c4-4"><label for="c4-4">Handle loading + error states visibly</label></li>
       </ul>
 
@@ -351,7 +351,6 @@
 <script>
 (function(){
   // ---- checklist state + progress ----
-  const phases = {1:8, 2:4, 3:0, 4:4, 5:4}; // item counts per phase (phase3 has none, counted via itself if added later)
   const allBoxes = Array.from(document.querySelectorAll('.checklist input[type=checkbox]'));
 
   function updateProgress(){

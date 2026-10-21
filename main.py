@@ -23,7 +23,15 @@ top_countries = [
     "France",
 ]
 
-app = FastAPI()
+app = FastAPI(
+    title="Mental Health Score Prediction API",
+    description=(
+        "API for an educational machine learning project that estimates a "
+        "reported mental health score from social media usage and daily habits. "
+        "This is not a medical assessment or diagnosis."
+    ),
+    version="1.0.0",
+)
 
 # Allow the web frontend to send requests to this API.
 app.add_middleware(
@@ -70,7 +78,12 @@ class PredictionResponse(BaseModel):
 
 @app.get("/")
 def greet():
-    return {"Welcome to Sheryians AI School Guys"}
+    return {
+        "message": "Mental Health Score Prediction API",
+        "status": "running",
+        "documentation": "/docs",
+        "note": "Educational prediction only; not a medical diagnosis.",
+    }
 
 
 @app.post("/predict", response_model=PredictionResponse)

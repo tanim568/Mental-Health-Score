@@ -1,0 +1,9 @@
+# Dependencies for running ML_Project.ipynb locally.
+# Includes the API/runtime packages plus notebook and visualization tools.
+# Install with: pip install -r requirements-notebook.txt
+-r requirements.txt
+numpy
+matplotlib
+seaborn
+jupyter
+ipykernel
